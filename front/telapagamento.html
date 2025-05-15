@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Produtos</title>
+  <link rel="stylesheet" href="estilos.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Lateral */
+    .sidebar {
+      width: 80px;
+      background-color: #062f4f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1rem;
+      gap: 1.5rem;
+    }
+
+    .sidebar button, .sidebar img {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Conteúdo */
+    .content {
+      flex: 1;
+      padding: 2rem;
+      overflow: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .header button {
+      background-color: #062f4f;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f1f1f1;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .categoria-link {
+      color: #1d4ed8;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      th, td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+      }
+
+      th::before, td::before {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: nowrap;
+        font-weight: bold;
+      }
+
+      th:nth-child(1)::before { content: "Categoria"; }
+      th:nth-child(2)::before { content: "Tipo"; }
+      th:nth-child(3)::before { content: "Responsável"; }
+      th:nth-child(4)::before { content: "Valor"; }
+      th:nth-child(5)::before { content: "Gasto"; }
+      th:nth-child(6)::before { content: "Receita"; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra lateral -->
+  <div class="sidebar">
+    <img src="logo.svg" alt="Logo" width="40" height="40" />
+    <button onclick="window.location.href='geral.html'">🏠</button>
+    <button onclick="window.location.href='estoque.html'">👜</button>
+    <button onclick="window.location.href='config.html'">⚙️</button>
+   <button onclick="window.location.href='index.html'">➡️</button>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="content">
+    <div class="header">
+      <h1>Produtos</h1>
+      <button onclick="window.location.href='cadastro.html'">Novo</button>
+    </div>
+
+    <p>Atualizado à 1m</p>
+
+    <table id="tabelaProdutos">
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th>Tipo</th>
+          <th>Responsável</th>
+          <th>Valor</th>
+          <th>Gasto</th>
+          <th>Receita</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Produtos inseridos dinamicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
+    function renderizarTabela() {
+      const tbody = document.querySelector("#tabelaProdutos tbody");
+      tbody.innerHTML = "";
+
+      produtos.forEach(prod => {
+        const receita = (parseFloat(prod.valor) - parseFloat(prod.gasto)).toFixed(2);
+        const linha = `
+          <tr>
+            <td><span class="categoria-link">${prod.categoria}</span></td>
+            <td>${prod.tipo}</td>
+            <td>${prod.responsavel}</td>
+            <td>${parseFloat(prod.valor).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</td>
+            <td>${parseFloat(prod.gasto).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</td>
+            <td>${parseFloat(receita).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</td>
+          </tr>
+        `;
+        tbody.innerHTML += linha;
+      });
+    }
+
+    renderizarTabela();
+  </script>
+</body>
+</html>
